@@ -1,0 +1,73 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <!-- Header -->
+    <header id="header">
+        
+
+        <div class="container">
+            <h2>Classement</h2>
+            <p>Classement des joueurs</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th> Classement</th>
+                    <th>Joueurs</th>
+                    <th>Nombre victoire</th>
+                    <th>Nombre défaite</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for user in users %}
+
+                    <tr style="background-color: black;">
+
+                        <td>{% if loop.index == 1 %}
+
+                                <span style="color:gold">{{ loop.index }}</span>
+
+                            {% else %}
+
+                                {% if loop.index == 2 %}
+
+                                    <span style="color:azure">{{ loop.index }}</span>
+
+                                {% else %}
+
+                                    {% if loop.index == 3 %}
+
+                                        <span style="color:saddlebrown">{{ loop.index }}</span>
+
+                                        {% else %}
+
+                                            {{ loop.index }}
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            {% endif %}
+                        </td>
+
+                        <td>{{ user.username }}</td>
+
+                        <td>{{ user.victoire }}</td>
+                        <td>{{ user.defaite }}</td>
+                        <td>{{ user.classement}}</td>
+
+
+
+
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </header>
+
+{% endblock %}

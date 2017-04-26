@@ -1,0 +1,28 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <!-- Header -->
+    {% if etat == 1 %}
+        <h1>{{ nom[1] }} : {{ score[1] }} |  {{ nom[2] }} : {{ score[2] }} </h1>
+
+        <h2>Le gagant est {{ gagnant }} ! </h2>
+    {% endif %}
+
+    {% if etat == 2 %}
+        <h1>Le joueur {{ perdant }} à abandonner ! </h1>
+
+        <h2>Le gagant est {{ gagnant }} ! </h2>
+        <p>{{ nom[1] }} : {{ score[1] }} |  {{ nom[2] }} : {{ score[2] }} </p>
+    {% endif %}
+
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+
+
+
+    </script>
+{% endblock %}

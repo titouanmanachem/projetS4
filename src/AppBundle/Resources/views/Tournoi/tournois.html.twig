@@ -1,0 +1,31 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <!-- Header -->
+    <header id="header">
+        <h2>Vos tournois en cours: </h2>
+   
+        {% for tournoi in tournois_inscrit %}
+            <li><a href="{{ path('affichagetournoicomplet', {'id': tournoi.id }  ) }}">{{ tournoi.nom }}</a></li>
+        {% else %}
+            <p>Vous ne participez a aucun tournoi. </p>
+        {% endfor %}
+
+
+        <h2>Les tournois en préparation : </h2>
+        {% for tournoi in tournois if tournoi.etat == 0  %}
+            <li><a href="{{ path('affichagetournoi', {'id': tournoi.id }  ) }}">{{ tournoi.nom }}</a></li>
+        {% else %}
+
+            <p>Il n'y a aucun de tournoi en cour de préparation.</p>
+        {% endfor %}
+
+
+
+        <br/><br/>
+        <a href=" {{ path('new_tournoi') }}"><h2>Créer un tournoi</h2></a>
+        <br/><br/>
+        <a href=" {{ path('partiespage') }}"><h2>Retour</h2></a>
+    </header>
+
+{% endblock %}

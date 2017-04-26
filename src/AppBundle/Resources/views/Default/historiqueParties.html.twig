@@ -1,0 +1,65 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <!-- Header -->
+    <header id="header">
+        <h1>Votre historique </h1>
+
+        <div class="container">
+            <h2>Historique</h2>
+            <p>Historique de vos parties</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID de la partie</th>
+                    <th>Joueurs</th>
+                    <th>Statut</th>
+                    <th>Gagnant</th>
+                    <th>Score</th>
+                    <th>Score adversaire</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for partie in parties if partie.etat == 1 or partie.etat == 2 and  partie.joueur1.id == app.user.id or partie.joueur2.id == app.user.id  %}
+
+                <tr style="background-color: black;">
+
+                    <td>{{ partie.id }}</td>
+
+                    <td>{{ partie.joueur1 }} VS {{ partie.joueur2 }}</td>
+
+                    <td>
+                    {% if partie.gagnant == app.user.username %}
+                        <span class="" style="color: #3c763d; b">VICTOIRE</span>
+                    {% else %}
+                        {% if partie.etat == 2 %}
+                        <span class="" style="color: #a94442;">DÉFAITE | ABANDON</span>
+                        {% else %}
+                        <span class="" style="color: #a94442;">DÉFAITE</span>
+                        {% endif%}
+                    {% endif %}
+                    </td>
+
+                    <td>{{ partie.gagnant }}</td>
+
+                    {% if partie.joueur1.id == app.user.id %}
+                        <td>{{ partie.scorej1 }}</td><td>{{ partie.scorej2 }}</td>
+                    {% else %}
+                        <td>{{ partie.scorej2 }}</td><td>{{ partie.scorej1 }}</td>
+                    {% endif %}
+
+
+
+
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </header>
+
+{% endblock %}

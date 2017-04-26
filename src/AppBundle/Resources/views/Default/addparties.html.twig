@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <!-- Header -->
+
+<h2>Défié un joueur</h2>
+
+    {% for user in users if app.user.username != user.username %}
+        <li><a href="{{ path('create_partie', {'id': user.id }  ) }}">{{ user.username }}</a></li>
+    {% endfor %}
+
+    <br/><br/>
+    <a href=" {{ path('partiespage') }}"><h2>Retour</h2></a>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <!-- Header -->
+    <header id="header">
+        <h2>Tournoi : {{ tournois.nom }} </h2>
+        <p>Récompense : {{ tournois.maxparticipant * 100 }} points</p>
+    </header>
+
+
+    {% if tournois.maxparticipant == 4  %}
+
+        <div class="container-fluid">
+            <div class="col-lg-3 tournoi">{{ palier1[0] }}</div>
+            <div class="col-lg-3  tournoi">{{ palier1[1] }}</div>
+            <div class="col-lg-3  tournoi">{{ palier1[2] }}</div>
+            <div class="col-lg-3  tournoi">{{ palier1[3] }}</div>
+            <div class="row"></div>
+            <div class="col-lg-3  tournoi">{{ palier2[0] }}</div>
+            <div class="col-lg-3  tournoi">{{ palier2[1] }}</div>
+            <div class="row"></div>
+            <div class="col-lg-3  tournoi">{{ palier3[0] }}</div>
+        </div>
+
+    {% endif %}
+
+    {% if tournois.maxparticipant == 8  %}
+
+        <div class="container-fluid">
+            <div class="col-lg-1 tournoi">{{ palier1[0] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier1[1] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier1[2] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier1[3] }}</div>
+            <div class="col-lg-1 tournoi">{{ palier1[4] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier1[5] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier1[6] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier1[7] }}</div>
+
+            <div class="row"></div>
+            <div class="col-lg-1 tournoi">{{ palier2[0] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier2[1] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier2[2] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier2[3] }}</div>
+
+            <div class="row"></div>
+            <div class="col-lg-1 tournoi">{{ palier3[0] }}</div>
+            <div class="col-lg-1  tournoi">{{ palier3[1] }}</div>
+
+            <div class="row"></div>
+            <div class="col-lg-1  tournoi">{{ palier3[0] }}</div>
+
+        </div>
+
+    {% endif %}
+
+
+{% endblock %}

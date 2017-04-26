@@ -1,0 +1,12 @@
+
+<div id="zone-notif">
+    {% for partie in parties %}
+        {% if partie.joueur1 == app.user.username or partie.joueur2 == app.user.username %}
+            {% if partie.tour == app.user.username and partie.etat == 0 %}
+                <div class="col-lg-12">
+                    <p> C'est votre tour : {{ partie.joueur1 }} vs {{ partie.joueur2 }}</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</div>

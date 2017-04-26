@@ -1,0 +1,28 @@
+
+
+<div id="zone-message">
+    {% for message in messages %}
+
+        {% if message.id_joueur.id == app.user.id %}
+            <div class="1message" style="color: black!important;">
+                <div class="pseudo">
+                    <p>{{ message.id_joueur.username }}</p>
+                </div>
+                <div class="lemessage">
+                    <p>{{ message.message }}</p>
+                </div>
+            </div>
+        {% else %}
+            <div class="other" style="width: 100%; height: 50px;">
+                <div class="1message" style="color: black!important; float: right; text-align: right;">
+                    <div class="pseudo">
+                        <p>{{ message.id_joueur.username }}</p>
+                    </div>
+                    <div class="lemessage" style="float: right;">
+                        <p>{{ message.message }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

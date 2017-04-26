@@ -1,0 +1,1080 @@
+{% extends '::base.html.twig' %}
+{% block style %} <style> p { margin-top: 2em; } </style> {% endblock %}
+{% block body %}
+    <!-- Header -->
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body" style="height: 300px; overflow: auto;">
+
+                <div id="zone-message">
+                    {% for message in messages %}
+
+                    {% if message.id_joueur.id == app.user.id %}
+                    <div class="1message" style="color: black!important;">
+                        <div class="pseudo">
+                            <p>{{ message.id_joueur.username }}</p>
+                        </div>
+                        <div class="lemessage">
+                            <p>{{ message.message }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="other" style="width: 100%; height: 50px;">
+                        <div class="1message" style="color: black!important; float: right; text-align: right;">
+                            <div class="pseudo">
+                                <p>{{ message.id_joueur.username }}</p>
+                            </div>
+                            <div class="lemessage" style="float: right;">
+                                <p>{{ message.message }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+
+
+                </div>
+                <div class="modal-footer" style="color: black;">
+                    <input type="text" name="message" id="message" class="form-group" placeholder="Votre message..." style="border: #bebebe 1px solid;">
+                    <button type="button" id="envoyer" class="btn btn-success" >Envoyer</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Retour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body" style="height: 250px; ">
+
+                    <h2 style=" color: #d9534f; font-size: 30px;"  >Attention !</h2>
+
+                    <p style="color: black;">Voulez vous vraiment abandonner ?</p>
+
+                    <a href="{{ path('abandon_partiespage', {'id': idpartie})  }}" class="btn btn-danger">OUI</a>
+                    <button class="btn btn-primary"  data-dismiss="modal">NON</button>
+
+                </div>
+                <div class="modal-footer" style="color: black;">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Retour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body" style="height: 300px; overflow: auto;">
+
+                    <div class="row me-row content-ct" style="color:black; ">
+
+                        <h2 class="row-title btn-primary" style="text-align:center;">Les régles du jeu</h2>
+                        <div style="padding: 30px;">
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;">Jouer un tour</strong></p>
+                        <p>
+                            A chaque tour le joueur possède 8 monstres.
+                            Il doit en jouer un, puis en piocher un.
+
+                            Vous avez deux façons de jouer un monstre :<br/>
+                            <div style="padding-left: 50px;">
+                            - Placez-le dans une famille du cirque<br/>
+                            - Ou jetez-le dans la fausse de la famille du monstre.
+                            </div>
+                            </p>
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;">Poser un monstre</strong></p>
+                        Pour placer un monstre dans le cirque, vous devez respecter l’ordre croissant de la frayeur, mais les monstres ne doivent pas forcément se suivre.
+
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;">Piocher un monstre</strong></p>
+                        A la fin de chaque tour, piocher un monstre dans la réserve OU dans la fausse d’une famille.
+
+                        Vous n’avez pas le droit de piocher un monstre que vous avez jeté à la fausse dans le même tour de jeu !
+
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;">Artefacts de qualité</strong> </p>
+                        <p>Ces artefacts doivent être placés en premier sur les familles avant de poser les monstres.
+                        Ils permettent de multiplier le score selon le nombre de bonus posés sur chaque famille.</p>
+
+
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;"> Fin du cirque</strong> </p>
+                        Le cirque se termine directement quand un joueur prend le dernier monstre de la réserve.
+
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;">Comptage des points :</strong></p>
+                        <p>
+                            Chaque famille commencée coûte 20 points. Ce coût est retranché par la valeur totale des monstres sur cette famille.
+                            Le résultat est multiplié par le nombre d’artefact posé sur la famille.
+                            Si la famille comporte au moins 8 monstres, alors 20 points sont ajoutés au résultat multiplié.
+                            Le score final est l’addition du total des points des cinq familles.</p>
+
+                        <p style="color: black; text-decoration: underline;"><strong style="color:black;">Inventaire des monstres</strong></p>
+                        Cinq familles comportent neuf monstres numérotés de 2 à 10.
+                        Il y a trois artefacts par famille.
+
+
+
+                    </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer" style="color: black;">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Retour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {% if app.user.username == user2 %}
+        <p style="text-align: center;">{% for carte in packet if carte.situation == 1 %} <img style="width: 7%;" src="{{ asset( 'assets/img/dos_carte.svg ') }}">  {% endfor %}</p>
+    {% else %}
+        <p style="text-align: center;">{% for carte in packet if carte.situation == 2 %} <img style="width: 7%;" src="{{ asset( 'assets/img/dos_carte.svg' ) }}">  {% endfor %}</p>
+    {% endif %}
+
+
+
+
+    <div class="plateau">
+        <div class="container-fluid" style="padding:0;" >
+
+            <div class="col-lg-12" style="padding:0; ">
+                <div class="col-xs-1" style=" background-color: #232e2e;height: 600px; padding:0;">
+                    <div class="tableau-bord">
+
+                        <p style="text-align: center; ">{{ user1.username }} vs  {{ user2.username }} </p>
+                        <p style="text-align: center;">Tour de : {{ tour }} </p>
+
+                        <p> score :</p>
+                        <p>
+                            {{ user1.username }} : {{ score[1] }}<br/>
+                            {{ user2.username }} : {{ score[2] }}
+                        </p>
+
+                    </div>
+                    <div class="col-lg-12" style="margin-top: 5%;">
+                        <button class="btn btn-primary" disabled id="pioche"> PIOCHE </button>
+                    </div>
+                </div>
+
+                <div style="background-color: #B22D37; height: 600px;" id="zone1"  class="col-xs-2 zone1">
+                    <div class="col-lg-12" style="margin-left:20px; height:200px;" id="a1">
+
+                        {% for carte in packet if carte.situation == 4 and carte.idjoueur != app.user.id %}
+                            <img style="margin-left:-15%; width: 30%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                    <button id="bd1" disabled class="buttton">
+                        <div class="col-lg-12 draggable"  style="height:200px; background-color: black; " id="d1">{% if zoned[9][1] != -1 %}
+                                <img  id="imgd1" data-id="{{ zoned[9][0] }}" src="{{ asset( zoned[9][2]) }}" style="width:45%;" />{% endif %}
+                        </div>
+                    </button>
+                    <div class="col-lg-12 draggable" data-valeurmax = "{{ zone[4] }}" style="padding-left:20px; height:200px;" id="m1">
+
+                        {% for carte in packet if carte.situation == 4 and carte.idjoueur == app.user.id %}
+                            <img style="width: 30%; margin-left:-15%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div style="background-color: #4A7279; height: 600px;" id="zone2" class="col-xs-2 zone2">
+                    <div class="col-lg-12 " style="margin-left:20px; height:200px;" id="a2">
+
+                        {% for carte in packet if carte.situation == 5 and carte.idjoueur != app.user.id %}
+                            <img style="margin-left:-15%; width: 30%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                    <button id="bd2"  disabled  class="buttton">
+                        <div class="col-lg-12 draggable" style="height:200px; background-color: black;" id="d2">{% if zoned[10][1] != -1 %}
+                                <img id="imgd2"  data-id="{{ zoned[10][0] }}" src="{{ asset( zoned[10][2]) }}" style="width:45%;" />{% endif %}
+                        </div>
+                    </button>
+
+                    <div class="col-lg-12 draggable" data-valeurmax = "{{ zone[5] }}" style="padding-left:20px; height:200px;" id="m2">
+
+                        {% for carte in packet if carte.situation == 5 and carte.idjoueur == app.user.id %}
+                            <img style="width: 30%; margin-left:-15%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+
+                <div style="background-color: #B6B15E;height: 600px;" id="zone3" class="col-xs-2 zone3">
+                    <div class="col-lg-12 " style="margin-left:20px; height:200px;" id="a3">
+
+                        {% for carte in packet if carte.situation == 6 and carte.idjoueur != app.user.id %}
+                            <img style="margin-left:-15%; width: 30%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                    <button id="bd3"  disabled  class="buttton">
+                        <div class="col-lg-12 draggable" style="height:200px; background-color: black;" id="d3">{% if zoned[11][1] != -1 %}
+                                <img id="imgd3" data-id="{{ zoned[11][0] }}" src="{{ asset( zoned[11][2]) }}" style="width:45%;" />{% endif %}
+                        </div>
+                    </button>
+                    <div class="col-lg-12 draggable" data-valeurmax = "{{ zone[6] }}" style="padding-left:20px; height:200px;" id="m3">
+
+                        {% for carte in packet if carte.situation == 6 and carte.idjoueur == app.user.id %}
+                            <img style="width: 30%; margin-left:-15%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+
+                <div style="background-color: #9A9998;height: 600px;" id="zone4" class="col-xs-2 zone4">
+                    <div class="col-lg-12 " style="margin-left:20px; height:200px;" id="a4">
+
+                        {% for carte in packet if carte.situation == 7 and carte.idjoueur != app.user.id %}
+                            <img style="margin-left:-15%; width: 30%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                    <button id="bd4"  disabled  class="buttton">
+                        <div class="col-lg-12 draggable" style="height:200px; background-color: black;" id="d4">{% if zoned[12][1] != -1 %}
+                                <img id="imgd4" data-id="{{ zoned[12][0] }}" src="{{ asset( zoned[12][2]) }}" style="width:45%;" />{% endif %}
+                        </div>
+                    </button>
+                    <div class="col-lg-12 draggable" data-valeurmax = "{{ zone[7] }}" style=" padding-left:20px; height:200px;" id="m4">
+
+                        {% for carte in packet if carte.situation == 7 and carte.idjoueur == app.user.id %}
+                            <img style="width: 30%; margin-left:-15%; " src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+
+                <div style="background-color: #bf606d;height: 600px;" id="zone5"  class="col-xs-2 zone5">
+                    <div class="col-lg-12 " style="margin-left:20px; height:200px;" id="a5">
+
+                        {% for carte in packet if carte.situation == 8 and carte.idjoueur != app.user.id %}
+                            <img style="margin-left:-15%; width: 30%;" src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                    <button id="bd5"  disabled  class="buttton">
+                        <div class="col-lg-12 draggable" style="height:200px; background-color: black;" id="d5">{% if zoned[13][1] != -1 %}
+                                <img id="imgd5" data-id="{{ zoned[13][0] }}" src="{{ asset( zoned[13][2]) }}" style="width:45%;" />{% endif %}
+                        </div>
+                    </button>
+                    <div class="col-lg-12 draggable" data-valeurmax = "{{ zone[8] }}" style="height:200px; padding-left:20px;" id="m5">
+
+                        {% for carte in packet if carte.situation == 8 and carte.idjoueur == app.user.id %}
+                            <img style="width: 30%;  margin-left:-15%; " src="{{ asset( carte.image ) }}">
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+
+                <div class="col-xs-1" style=" background-color: #232e2e;height: 600px;">
+                    <div class="col-lg-12">
+                        <i class="fa fa-comments" aria-hidden="true" style="font-size: 50px;" data-toggle="modal" data-target="#myModal"></i>
+                        <br/>
+
+                        <i class="fa fa-question-circle" aria-hidden="true" style="font-size: 50px;" data-toggle="modal" data-target="#myModal2"  ></i>
+                        <br/>
+
+                        <i class="fa  fa-times" aria-hidden="true" style="font-size: 50px;" data-toggle="modal" data-target="#myModal3"  ></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="main">
+        {% if app.user.username == user2 %}
+            <p style="text-align: center;">{% for carte in packet if carte.situation == 2 %} <img  id="{{ carte.id }}"  data-value="{{ carte.value }}" style="width: 7%;" src="{{ asset( carte.image ) }}">  {% endfor %}</p>
+        {% else %}
+            <p style="text-align: center;">{% for carte in packet if carte.situation == 1 %} <img id="{{ carte.id }}" data-value="{{ carte.value }}" style="width: 7%;" src="{{ asset( carte.image ) }}">  {% endfor %}</p>
+        {% endif %}
+
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+
+        var id_objet;
+        var zone;
+        var prendre = new Audio('{{ asset('assets/sound/prendre.wav') }}');
+        var lacher = new Audio('{{ asset('assets/sound/lacher.wav') }}');
+
+
+        $( "#bd1" ).click(function() {
+            if (  "{{ tour }}" == "{{ app.user.username }}" ) {
+                var tour = $("tour").val();
+                var id_carte_defausse = $( '#imgd1' ).data( "id" ) ;
+                $.ajax({
+                    url : '{{ path('pioche_defausse', {'partie': idpartie ,'tour':tour  })  }}',
+                    type : 'POST',
+                    data : {
+                        'id_carte_defausse':id_carte_defausse,
+                        'id_objet':id_objet,
+                        'zone':zone
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                        console.log("ajax");
+                        window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                    },
+                    error : function(resultat, statut, erreur){
+                        console.log("error");
+                    }
+                });
+            }
+            else {
+                alert('Ce n\'est pas votre tour !');
+            }
+        });
+        $( "#bd2" ).click(function() {
+            if (  "{{ tour }}" == "{{ app.user.username }}" ) {
+                var tour = $("tour").val();
+                var id_carte_defausse = $( '#imgd2' ).data( "id" ) ;
+                $.ajax({
+                    url : '{{ path('pioche_defausse', {'partie': idpartie ,'tour':tour  })  }}',
+                    type : 'POST',
+                    data : {
+                        'id_carte_defausse':id_carte_defausse,
+                        'id_objet':id_objet,
+                        'zone':zone
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                        console.log("ajax");
+                        window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                    },
+                    error : function(resultat, statut, erreur){
+                        console.log("error");
+                    }
+                });
+            }
+            else {
+                alert('Ce n\'est pas votre tour !');
+            }
+        });
+        $( "#bd3" ).click(function() {
+            if (  "{{ tour }}" == "{{ app.user.username }}" ) {
+                var tour = $("tour").val();
+                var id_carte_defausse = $( '#imgd3' ).data( "id" ) ;
+                $.ajax({
+                    url : '{{ path('pioche_defausse', {'partie': idpartie ,'tour':tour  })  }}',
+                    type : 'POST',
+                    data : {
+                        'id_carte_defausse':id_carte_defausse,
+                        'id_objet':id_objet,
+                        'zone':zone
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                        console.log("ajax");
+                        window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                    },
+                    error : function(resultat, statut, erreur){
+                        console.log("error");
+                    }
+                });
+            }
+            else {
+                alert('Ce n\'est pas votre tour !');
+            }
+        });
+        $( "#bd4" ).click(function() {
+            if (  "{{ tour }}" == "{{ app.user.username }}" ) {
+                var tour = $("tour").val();
+                var id_carte_defausse = $( '#imgd4' ).data( "id" ) ;
+                $.ajax({
+                    url : '{{ path('pioche_defausse', {'partie': idpartie ,'tour':tour  })  }}',
+                    type : 'POST',
+                    data : {
+                        'id_carte_defausse':id_carte_defausse,
+                        'id_objet':id_objet,
+                        'zone':zone
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                        console.log("ajax");
+                        window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                    },
+                    error : function(resultat, statut, erreur){
+                        console.log("error");
+                    }
+                });
+            }
+            else {
+                alert('Ce n\'est pas votre tour !');
+            }
+        });
+        $( "#bd5" ).click(function() {
+            if (  "{{ tour }}" == "{{ app.user.username }}" ) {
+                var tour = $("tour").val();
+                var id_carte_defausse = $( '#imgd5' ).data( "id" ) ;
+                $.ajax({
+                    url : '{{ path('pioche_defausse', {'partie': idpartie ,'tour':tour  })  }}',
+                    type : 'POST',
+                    data : {
+                        'id_carte_defausse':id_carte_defausse,
+                        'id_objet':id_objet,
+                        'zone':zone
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                        console.log("ajax");
+                        window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                    },
+                    error : function(resultat, statut, erreur){
+                        console.log("error");
+                    }
+                });
+            }
+            else {
+                alert('Ce n\'est pas votre tour !');
+            }
+        });
+
+
+        $( "#envoyer" ).click(function() {
+            console.log("click");
+
+            var message =  $('#message').val();
+
+            console.log(message);
+
+            if ( message == ""){}
+            else {
+
+                $.ajax({
+                    url : '{{ path('chatParties', {'id': idpartie })  }}',
+                    type : 'POST',
+                    data : {
+                        'message':message
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                        console.log("ajax");
+                        var text = "";
+                        $('#message').val(text);
+
+                    },
+                    error : function(resultat, statut, erreur){
+                        console.log("error");
+                    }
+                });
+            }
+
+
+
+        });
+
+        $(function(){
+            {% if app.user.username == user2 %}
+                {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable({
+                        revert: "invalid",
+                        start: function( event, ui ) {
+                            $(this).addClass('{{ carte.categorie }}');
+
+                           prendre.play();
+
+                        }
+                    });
+
+
+                {% endfor %}
+            {% else %}
+                {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable({
+                        revert: "invalid",
+                        start: function( event, ui ) {
+                            $(this).addClass('{{ carte.categorie }}');
+
+                            prendre.play();
+                        }
+
+                    });
+                {% endfor %}
+            {% endif %}
+
+            $('#main').droppable({
+                drop : function(){
+
+                    lacher.play();
+
+                    lacher.play();
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("enable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("enable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#pioche').attr("disabled","disabled").addClass( 'ui-state-disabled' );
+                    $('#bd1').attr("disabled","disabled").addClass( 'ui-state-disabled' );
+                    $('#bd2').attr("disabled","disabled").addClass( 'ui-state-disabled' );
+                    $('#bd3').attr("disabled","disabled").addClass( 'ui-state-disabled' );
+                    $('#bd4').attr("disabled","disabled").addClass( 'ui-state-disabled' );
+                    $('#bd5').attr("disabled","disabled").addClass( 'ui-state-disabled' );
+                }
+            });
+
+            $('#d1').droppable({
+
+                accept: function(d) {
+                    if(d.hasClass("5")){
+                        return true;
+                    }
+                },
+
+                drop : function(ev, ui){
+
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                    id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+
+                    if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd3')) {
+                        $('#bd3').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+                    if(document.getElementById('imgd4')) {
+                        $('#bd4').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+                    if(document.getElementById('imgd5')) {
+                        $('#bd5').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+                    zone = 9 ;
+
+
+                }
+            });
+
+            $('#d2').droppable({
+
+                accept: function(d) {
+                    if(d.hasClass("4")){
+                        return true;
+                    }
+                },
+
+                drop : function(ev, ui){
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                    id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd2')) {
+                        $('#bd3').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+                    if(document.getElementById('imgd4')) {
+                        $('#bd4').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+                    if(document.getElementById('imgd5')) {
+                        $('#bd5').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+                    if(document.getElementById('imgd1')) {
+                        $('#bd1').removeAttr("disabled").removeClass('ui-state-disabled');
+                    }
+
+
+                    zone = 10 ;
+                }
+            });
+
+            $('#d3').droppable({
+
+                accept: function(d) {
+                    if(d.hasClass("1")){
+                        return true;
+                    }
+                },
+
+                drop : function(ev, ui){
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                    id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd4')){
+                        $('#bd4').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+
+
+                    zone = 11 ;
+                }
+            });
+
+            $('#d4').droppable({
+
+                accept: function(d) {
+                    if(d.hasClass("3")){
+                        return true;
+                    }
+                },
+
+                drop : function(ev, ui){
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                    id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+
+                    if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    zone = 12 ;
+                }
+            });
+
+            $('#d5').droppable({
+
+                accept: function(d) {
+                    if(d.hasClass("2")){
+                        return true;
+                    }
+                },
+
+                drop : function(ev, ui){
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                    id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+
+                    zone = 13 ;
+                }
+            });
+
+
+
+            $('#m1').droppable({
+
+                accept: function(d) {
+                    if(d.hasClass("5")){
+
+                        if (d.data("value") >= $( '#m1' ).data( "valeurmax" )  ){
+
+                            return true;
+                        }
+
+                    }
+                },
+
+                drop : function(ev, ui){
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                    id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+
+                    if(document.getElementById('imgd4')){
+                        $('#bd4').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+
+                    zone = 4 ;
+
+                }
+            });
+
+            $('#m2').droppable({
+                accept: function(d) {
+                    if(d.hasClass("4")){
+
+                        if (d.data("value") >= $( '#m2' ).data( "valeurmax" )  ){
+
+                            return true;
+                        }
+
+                    }
+                },
+                drop : function(ev, ui){
+
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                     id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd4')){
+                        $('#bd4').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+
+                    zone = 5 ;
+
+                },
+
+
+            });
+
+            $('#m3').droppable({
+                accept: function(d) {
+                    if(d.hasClass("1")){
+
+                        if (d.data("value") >= $( '#m3' ).data( "valeurmax" )  ){
+
+                            return true;
+                        }
+
+                    }
+                },
+                drop : function(ev, ui){
+
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                     id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd4')){
+                        $('#bd4').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+
+                    zone = 6 ;
+                }
+            });
+
+            $('#m4').droppable({
+                accept: function(d) {
+                    if(d.hasClass("3")){
+
+                        if (d.data("value") >= $( '#m4' ).data( "valeurmax" )  ){
+
+                            return true;
+                        }
+
+                    }
+                },
+                drop : function(ev, ui){
+
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                     id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd4')){
+                        $('#bd4').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    zone = 7 ;
+                }
+            });
+
+            $('#m5').droppable({
+                accept: function(d) {
+                    if(d.hasClass("2")){
+
+                        if (d.data("value") >= $( '#m5' ).data( "valeurmax" )  ){
+
+                            return true;
+                        }
+
+                    }
+                },
+                drop : function(ev, ui){
+
+                    lacher.play();
+                    var objet_drop = $(ui.draggable); // L'élément drop
+                     id_objet = objet_drop.attr('id'); // ID de l'élément drop
+
+                    {% if app.user.username == user2 %}
+                    {% for carte in packet if carte.situation == 2 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% else %}
+                    {% for carte in packet if carte.situation == 1 %}
+                    $('#{{ carte.id }}').draggable("disable");
+                    {% endfor %}
+                    {% endif %}
+
+                    $('#'+id_objet+'').draggable("enable");
+                    $('#pioche').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    if(document.getElementById('imgd4')){
+                        $('#bd4').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+                    if(document.getElementById('imgd1')){
+                        $('#bd1').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd2')){
+                        $('#bd2').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd3')){
+                        $('#bd3').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    } if(document.getElementById('imgd5')){
+                        $('#bd5').removeAttr("disabled").removeClass( 'ui-state-disabled' );
+                    }
+
+
+                    zone = 8 ;
+                }
+            });
+
+
+        });
+        setInterval(function () {
+        $("#zone-message").load("{{ path('chat_load_Parties', {'id': idpartie })}}");
+            $.ajax({
+
+                url: '{{ path('verif_etat_partie', {'id': idpartie  }) }}',
+                type: 'POST',
+
+                success: function (code_html, statut) { // code_html contient le HTML renvoyé
+                    console.log("ajax");
+                    if ( code_html == "FIN"){
+
+                        window.location.href = "{{ path('fin_partie', {'id': idpartie }  ) }}";
+                    }
+                },
+                error: function (resultat, statut, erreur) {
+
+                    console.log("error");
+
+                }
+            });
+        }, 3000);
+
+        if (  "{{ tour }}" != "{{ app.user.username }}" ) {
+            setInterval(function () {
+
+                $.ajax({
+
+                    url: '{{ path('verif_partie', {'partie': idpartie ,'tour':tour }) }}',
+                    type: 'POST',
+
+                    success: function (code_html, statut) { // code_html contient le HTML renvoyé
+
+                        console.log("ajax");
+                        if ( code_html == "CHANGEMENT DE TOUR"){
+
+                            window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                        }
+                    },
+                    error: function (resultat, statut, erreur) {
+
+                        console.log("error");
+
+                    }
+                });
+
+
+
+            }, 3000);
+        }
+
+
+        $( "#pioche" ).click(function() {
+
+            if (  "{{ tour }}" == "{{ app.user.username }}" ) {
+
+                var tour = $("tour").val();
+
+                $.ajax({
+
+                    url : '{{ path('pioche_partie', {'partie': idpartie ,'tour':tour })  }}',
+                    type : 'POST',
+                    data : {
+                        'zone':zone,
+                        'id_objet':id_objet
+
+                    },
+                    success : function(code_html, statut){ // code_html contient le HTML renvoyé
+
+                        console.log("ajax");
+                        if ( code_html == "FIN DE PARTIE"){
+
+                            alert('FIN DU JEU');
+                        }
+                        else {
+                            window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";
+                        }
+
+                    },
+                    error : function(resultat, statut, erreur){
+
+                        console.log("error");
+
+                    }
+                });
+            }
+
+            else {
+
+                alert('Ce n\'est pas votre tour !');
+            }
+
+        });
+
+    </script>
+
+{% endblock %}

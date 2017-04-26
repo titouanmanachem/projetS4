@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+<!-- Header -->
+	<audio autoplay="false" loop="false">
+		<source src="{{ asset('assets/song.mp3') }}" type="audio/mp3" />
+		Votre navigateur n'est pas compatible
+	</audio>
+<header id="header">
+	<h1>THE VERY SCARY CIRCUS</h1>
+	<p>Le jeu arrive bientôt<br />
+		Il faudra être un peu patient. Pour patientez rejoignez nous sur <a href="http://89.234.183.171/promo">le site de promotion</a></p>
+
+	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+	<br/><br/>
+	<a href=" {{ path('partiespage') }}"><h2>JOUER</h2></a>
+		<a href=" {{ path('classement') }}"><h2>CLASSEMENT</h2></a>
+		{% if is_granted("ROLE_ADMIN") %}
+			<a href="/jeu/admin">ADMINISTRATION</a>
+		{% endif %}
+	{% else %}
+		<br/><br/>
+		<a href=" {{ path('fos_user_security_login') }}"><h2>CONNEXION</h2></a>
+		<a href=" {{ path('classement') }}"><h2>CLASSEMENT</h2></a>
+
+		</header>
+	{% endif %}
+
+
+
+
+{% endblock %}
