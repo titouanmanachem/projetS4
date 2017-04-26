@@ -26,7 +26,7 @@ class Participant_tournoi_circus
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Tournoi_circus")
+     * @ORM\ManyToOne(targetEntity="Tournoi_circus" ,cascade={"remove"})
      */
     private $id_tournoi;
 

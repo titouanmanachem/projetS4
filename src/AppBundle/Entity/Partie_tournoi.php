@@ -22,7 +22,7 @@ class Partie_tournoi
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Tournoi_circus")
+     * @ORM\ManyToOne(targetEntity="Tournoi_circus" )
      */
     private $id_tournoi;
 

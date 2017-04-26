@@ -18,7 +18,7 @@ class PartieController extends Controller
      */
     public function partiesAction(){
         $em = $this->getDoctrine()->getManager();
-        $parties = $em->getRepository('AppBundle:Partie_circus')->findAll();
+        $parties = $em->getRepository('AppBundle:Partie_circus')->findBy(array('etat'=>0));
         return $this->render('AppBundle:Default:parties.html.twig', array(
             'parties' => $parties,
         ));
@@ -39,6 +39,22 @@ class PartieController extends Controller
                 ->getRepository('AppBundle:Partie_circus')
             ;
 
+            $repocarte = $this
+                ->getDoctrine()
+                ->getManager()
+                ->getRepository('AppBundle:Cartes_jeu_circus')
+            ;
+
+            $cartes = $repocarte->findBy(array('idpartie' => $id));
+
+            for ($a=0; $a < count($cartes); $a++){
+                $cartes[$a]->setSituationcarte(999);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($cartes[$a]);
+                $em->flush();
+            }
+
             $partie =  $repository->findOneBy(array('id'=>$id));
 
             $score = $this->score($id);
@@ -52,17 +68,18 @@ class PartieController extends Controller
 
                 if (  $user_nom == $nom[1] ){
 
-                    $perdant = $nom[1];
+
                     $nowetat = $partie->getEtat();
 
-                    $gagnant = $nom[2];
-                    $partie->setGagnant($nom[2]);
-                    $partie->setEtat(2);
-                    $etat = 2 ;
-                    $partie->setScorej1($score[1]);
-                    $partie->setScorej2($score[2]);
-
                     if ($nowetat == 0){
+                        $perdant = $nom[1];
+                        $gagnant = $nom[2];
+                        $partie->setGagnant($nom[2]);
+                        $partie->setEtat(2);
+                        $etat = 2 ;
+                        $partie->setScorej1($score[1]);
+                        $partie->setScorej2($score[2]);
+
                         $victoire = $joueur1->getDefaite();
                         $defaite = $joueur2->getVictoire();
                         $defaite = $defaite + 1 ;
@@ -79,6 +96,28 @@ class PartieController extends Controller
                         $joueur1->setClassement( $classj1 );
                         $joueur2->setClassement( $classj2 );
                     }
+                    else {
+                        if ($nowetat == 1){
+                            $etat = 1 ;
+                            $gagnant = $partie->getGagnant();
+                            if ( $gagnant == $nom[1]){
+                                $perdant = $nom[2] ;
+                            }
+                            else {
+                                $perdant = $nom[1];
+                            }
+                        }
+                        else {
+                            $etat = 2 ;
+                            $gagnant = $partie->getGagnant();
+                            if ( $gagnant == $nom[1]){
+                                $perdant = $nom[2] ;
+                            }
+                            else {
+                                $perdant = $nom[1];
+                            }
+                        }
+                    }
 
                     $repository = $this->getDoctrine()->getManager();
                     $repository -> persist($partie);
@@ -92,15 +131,17 @@ class PartieController extends Controller
                 else {
 
                     $nowetat = $partie->getEtat();
-                    $perdant = $nom[2];
-                    $gagnant = $nom[1];
-                    $partie->setGagnant($nom[1]);
-                    $partie->setEtat(2);
-                    $etat = 2 ;
-                    $partie->setScorej1($score[1]);
-                    $partie->setScorej2($score[2]);
+
 
                     if ($nowetat == 0){
+
+                        $perdant = $nom[2];
+                        $gagnant = $nom[1];
+                        $partie->setGagnant($nom[1]);
+                        $partie->setEtat(2);
+                        $etat = 2 ;
+                        $partie->setScorej1($score[1]);
+                        $partie->setScorej2($score[2]);
                         $victoire = $joueur1->getVictoire();
                         $defaite = $joueur2->getDefaite();
                         $defaite = $defaite + 1 ;
@@ -116,6 +157,28 @@ class PartieController extends Controller
 
                         $joueur1->setClassement( $classj1 );
                         $joueur2->setClassement( $classj2 );
+                    }
+                    else {
+                        if ($nowetat == 1){
+                            $etat = 1 ;
+                            $gagnant = $partie->getGagnant();
+                            if ( $gagnant == $nom[1]){
+                                $perdant = $nom[2] ;
+                            }
+                            else {
+                                $perdant = $nom[1];
+                            }
+                        }
+                        else {
+                            $etat = 2 ;
+                            $gagnant = $partie->getGagnant();
+                            if ( $gagnant == $nom[1]){
+                                $perdant = $nom[2] ;
+                            }
+                            else {
+                                $perdant = $nom[1];
+                            }
+                        }
                     }
 
                     $repository = $this->getDoctrine()->getManager();
@@ -234,14 +297,16 @@ class PartieController extends Controller
 
                 $nowetat = $partie->getEtat();
 
-                $gagnant = $nom[1];
-                $partie->setGagnant($nom[1]);
-                $partie->setEtat(1);
-                $etat = 1 ;
-                $partie->setScorej1($score[1]);
-                $partie->setScorej2($score[2]);
-
                 if ($nowetat == 0){
+
+
+                    $gagnant = $nom[1];
+                    $partie->setGagnant($nom[1]);
+                    $partie->setEtat(1);
+                    $etat = 1 ;
+                    $partie->setScorej1($score[1]);
+                    $partie->setScorej2($score[2]);
+
 
                 $victoire = $joueur1->getVictoire();
                 $defaite = $joueur2->getDefaite();
@@ -261,26 +326,51 @@ class PartieController extends Controller
                 $joueur2->setClassement( $classj2 );
                 }
 
+                else {
+                    if ($nowetat == 1){
+                        $etat = 1 ;
+                        $gagnant = $partie->getGagnant();
+                        if ( $gagnant == $nom[1]){
+                            $perdant = $nom[2] ;
+                        }
+                        else {
+                            $perdant = $nom[1];
+                        }
+                    }
+                    else {
+                        $etat = 2 ;
+                        $gagnant = $partie->getGagnant();
+                        if ( $gagnant == $nom[1]){
+                            $perdant = $nom[2] ;
+                        }
+                        else {
+                            $perdant = $nom[1];
+                        }
+                    }
+                }
+
                 $repository = $this->getDoctrine()->getManager();
                 $repository -> persist($partie);
                 $repository -> persist($joueur1);
                 $repository -> flush();
 
-                return $this->render('AppBundle:Default:finParties.html.twig', ['etat'=>$etat ,'gagnant' => $gagnant , 'nom' => $nom , 'score' => $score ] );
+                return $this->render('AppBundle:Default:finParties.html.twig', ['perdant'=> $perdant ,'etat'=>$etat ,'gagnant' => $gagnant , 'nom' => $nom , 'score' => $score ] );
 
             }
             else {
 
                 $nowetat = $partie->getEtat();
 
-                $gagnant = $nom[2];
-                $partie->setGagnant($nom[2]);
-                $partie->setEtat(1);
-                $etat = 1 ;
-                $partie->setScorej1($score[1]);
-                $partie->setScorej2($score[2]);
+
 
                 if ($nowetat == 0){
+
+                    $gagnant = $nom[2];
+                    $partie->setGagnant($nom[2]);
+                    $partie->setEtat(1);
+                    $etat = 1 ;
+                    $partie->setScorej1($score[1]);
+                    $partie->setScorej2($score[2]);
                 $victoire = $joueur2->getVictoire();
                 $defaite = $joueur1->getDefaite();
                 $defaite = $defaite + 1 ;
@@ -298,13 +388,36 @@ class PartieController extends Controller
                     $joueur2->setClassement( $classj2 );
 
                 }
+                else {
+                    if ($nowetat == 1){
+                        $etat = 1 ;
+                        $gagnant = $partie->getGagnant();
+                        if ( $gagnant == $nom[1]){
+                            $perdant = $nom[2] ;
+                        }
+                        else {
+                            $perdant = $nom[1];
+                        }
+                    }
+                    else {
+
+                        $etat = 2;
+                        $gagnant = $partie->getGagnant();
+                        if ( $gagnant == $nom[1]){
+                            $perdant = $nom[2] ;
+                        }
+                        else {
+                            $perdant = $nom[1];
+                        }
+                    }
+                }
 
                 $repository = $this->getDoctrine()->getManager();
                 $repository -> persist($partie);
                 $repository -> persist($joueur2);
                 $repository -> flush();
 
-                return $this->render('AppBundle:Default:finParties.html.twig', ['etat'=>$etat , 'gagnant' => $gagnant , 'nom' => $nom , 'score' => $score  ] );
+                return $this->render('AppBundle:Default:finParties.html.twig', ['perdant'=> $perdant,'etat'=>$etat , 'gagnant' => $gagnant , 'nom' => $nom , 'score' => $score  ] );
             }
         }
         else {
@@ -426,7 +539,7 @@ class PartieController extends Controller
                     $packet[] = array( 'id'=>$modeles[$i]->getId(), 'value'=>$modeles[$i]->getValeurcarte(), 'situation'=>$cartes[$a]->getSituationcarte(), 'nom'=>$modeles[$i]->getNomcarte(), 'ordre'=>$cartes[$a]->getOrdrecarte() , 'image'=>$modeles[$i]->getImageCarte(), 'categorie'=>$modeles[$i]->getCategoriecarte() , 'idjoueur'=>$cartes[$a]->getIdjoueur() );
 
                 }
-
+                
             }
 
         }
@@ -903,6 +1016,8 @@ class PartieController extends Controller
             ->getDoctrine()
             ->getManager()
             ->getRepository('AppBundle:Cartes_jeu_circus');
+
+
 
         $cartes = $repository->findBy(array('idpartie' => $partie));
 

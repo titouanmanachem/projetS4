@@ -7,6 +7,7 @@ use Proxies\__CG__\AppBundle\Entity\Partie_circus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -53,6 +54,35 @@ class DefaultController extends Controller
         $parties = $repopartie->findAll();
 
         return $this->render("AppBundle:Default:notification.html.twig", array('parties'=> $parties , 'id_joueur'=> $user_id ));
+    }
+
+    /**
+     * @Route("/notification2", name="notification2")
+     */
+    public function notification2Action(){
+
+        $user = $this->getUser();
+        $username = $user->getUsername();
+
+        $repopartie= $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:Partie_circus');
+
+        $parties = $repopartie->findBy(array('tour' => $username, 'etat'=>0));
+
+        if (empty($parties)){
+            return new Response(
+                'vide',200
+            );
+        }
+        else {
+            return new Response(
+                'notif',200
+            );
+        }
+
+
     }
 
 }

@@ -19,6 +19,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}" />
     <!--[if lte IE 8]><link rel="stylesheet" href="{{ asset('assets/css/ie8.css.css') }}" /><![endif]-->
     <!--[if lte IE 9]><link rel="stylesheet" href="{{ asset('assets/css/ie9.css') }}" /><![endif]-->
+
+
+
     {% block style %} {% endblock %}
 </head>
 <body>
@@ -30,10 +33,13 @@
 
     <div class="navbar navbar-inverse navbar-fixed-top" >
         <a style="float: left;" class="navbar-brand" href="http://89.234.183.171/jeu"><img style="width:5%;" src="{{asset('assets/img/logo.svg')}}"></a>
-        <ul style="float: right;" class="nav navbar-nav">
 
-            <li> <a> <i class="fa fa-bell" aria-hidden="true"></i></a></li>
+
+
+        <ul style="float: right;" class="nav navbar-nav">
+            <li> <a> <i id="cloche" class="fa fa-bell"  data-toggle="modal" data-target="#myModal5"> </i></a></li>
             <li> <a href="{{ path( 'fos_user_profile_show') }}"> Votre compte {{ app.user.username }}</a></li>
+
         </ul>
     </div>
 
@@ -48,6 +54,21 @@
     </div>
 
 {% endif %}
+<div class="modal fade" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color:black;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 style="color:#3f729b;" class="modal-title" id="exampleModalLabel">Notifications</h5>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; height: 200px;">
+            <div id="notif"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -57,6 +78,34 @@
 <!-- Scripts -->
 <!--[if lte IE 8]><script src="{{ asset('assets/js/respond.min.js') }}"></script><![endif]-->
 <script src="{{ asset('assets/js/main.js') }}"></script>
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+<script>
+    setInterval(function () {
+
+        $("#notif").load("{{ path('notification')}}");
+
+        $.ajax({
+            url : '{{ path('notification2') }}',
+            type : 'POST',
+            success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                console.log("ajax");
+                if (code_html == "notif"){
+                    console.log('test2');
+                    $("#cloche").fadeOut(900).delay(300).fadeIn(800);
+                    $("#cloche").css('color', 'red');
+                }
+            },
+            error : function(resultat, statut, erreur){
+                console.log("error");
+            }
+        });
+
+    }, 3000);
+
+
+</script>
+{% endif %}
 
 {% block script %} {% endblock %}
 </body>

@@ -152,8 +152,14 @@
 
                         <p> score :</p>
                         <p>
+
+                            {% if app.user.username == user1.username %}
                             {{ user1.username }} : {{ score[1] }}<br/>
                             {{ user2.username }} : {{ score[2] }}
+                            {% else %}
+                                {{ user1.username }} : {{ score[2] }}<br/>
+                                {{ user2.username }} : {{ score[1] }}
+                            {% endif %}
                         </p>
 
                     </div>
@@ -992,7 +998,6 @@
                 success: function (code_html, statut) { // code_html contient le HTML renvoyé
                     console.log("ajax");
                     if ( code_html == "FIN"){
-
                         window.location.href = "{{ path('fin_partie', {'id': idpartie }  ) }}";
                     }
                 },
@@ -1053,7 +1058,7 @@
                         console.log("ajax");
                         if ( code_html == "FIN DE PARTIE"){
 
-                            alert('FIN DU JEU');
+                            window.location.href = "{{ path('fin_partie', {'id': idpartie }  ) }}";
                         }
                         else {
                             window.location.href = "{{ path('play_partie', {'id': idpartie }  ) }}";

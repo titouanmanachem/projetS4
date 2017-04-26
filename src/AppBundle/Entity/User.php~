@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  
 /**
  * @ORM\Entity
- * @ORM\Table(name="fos_user")
+ * @ORM\Table(name="fos_user" )
  */
 class User extends BaseUser
 {
@@ -20,21 +20,22 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\Column(name="victoire", type="integer"  )
+     * @ORM\Column(name="victoire", type="integer"   )
      */
-    protected $victoire;
+    protected $victoire  = 0;
 
     /**
      * @ORM\Column(name="classement", type="integer"  )
      */
-    protected $classement ;
+    protected $classement = 0 ;
 
     /**
      * @ORM\Column(name="defaite", type="integer"  )
      */
-    protected $defaite;
+    protected $defaite  = 0;
 
     /**
+     * @ORM\OneToMany(targetEntity="Partie_circus", mappedBy="joueur1" )
      */
     protected $parties_j1;
 
